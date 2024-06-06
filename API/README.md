@@ -1,0 +1,2 @@
+# API
+The backend API for TextPurify, responsible for the filtering and moderation of text content. The API is built using Springboot, a modern Java web framework. The API can be accessed [here](https://purify.rainnny.club).

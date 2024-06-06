@@ -1,0 +1,19 @@
+# Server Configuration
+server:
+  address: 0.0.0.0
+  port: 7500
+
+# Log Configuration
+logging:
+  file:
+    path: "./logs"
+
+# Spring Configuration
+spring:
+  # Don't serialize null values by default with Jackson
+  jackson:
+    default-property-inclusion: non_null
+
+  # Ignore
+  banner:
+    location: "classpath:banner.txt"
