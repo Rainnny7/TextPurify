@@ -13,7 +13,8 @@ import me.braydon.profanity.model.ProfanityList;
 import me.braydon.profanity.model.input.ContentProcessInput;
 import me.braydon.profanity.model.response.ContentProcessResponse;
 import me.braydon.profanity.processor.TextProcessor;
-import me.braydon.profanity.processor.impl.VulgarityProcessor;
+import me.braydon.profanity.processor.impl.AdTextProcessor;
+import me.braydon.profanity.processor.impl.VulgarityTextProcessor;
 import me.braydon.profanity.repository.ProfanityListRepository;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,8 @@ public final class FiltrationService {
         this.profanityListRepository = profanityListRepository;
 
         // Register text processors
-        textProcessors.add(new VulgarityProcessor());
+        textProcessors.add(new VulgarityTextProcessor());
+        textProcessors.add(new AdTextProcessor());
     }
 
     /**
@@ -116,8 +118,12 @@ public final class FiltrationService {
 
         // Calculate the score based on
         // the matched profane content, that cannot be bypassed by changing the content length
-        double score = Math.min(matched.stream().mapToDouble(String::length).sum() / content.length(), 1D);
+        double score = 0D;
+        for (String match : matched) {
+            score+= 2D / (double) match.length();
+        }
+        score = Math.min(score, 1D);
 
-        return new ContentProcessResponse(replacement.toString(), matched, tags, score);
+        return new ContentProcessResponse(!matched.isEmpty(), replacement.toString(), matched, tags, score);
     }
 }

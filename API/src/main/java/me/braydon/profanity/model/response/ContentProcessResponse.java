@@ -13,6 +13,11 @@ import java.util.List;
 @AllArgsConstructor @Getter
 public final class ContentProcessResponse {
     /**
+     * Does the content contain profanity?
+     */
+    private final boolean containsProfanity;
+
+    /**
      * The replacement for the content.
      */
     @NonNull private final String replacement;

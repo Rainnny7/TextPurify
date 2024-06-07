@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  *
  * @author Braydon
  */
-public final class VulgarityProcessor extends TextProcessor {
+public final class VulgarityTextProcessor extends TextProcessor {
     private static final String PUNCTUATION_PATTERN = "[\\p{Punct}]*";
 
     /**
@@ -44,7 +44,7 @@ public final class VulgarityProcessor extends TextProcessor {
         charSubstitutions.put('1', Collections.singletonList('!'));
     }
 
-    public VulgarityProcessor() {
+    public VulgarityTextProcessor() {
         super(ContentTag.VULGARITY);
     }
 
@@ -74,6 +74,8 @@ public final class VulgarityProcessor extends TextProcessor {
 
             while (matcher.find()) {
                 matched.add(word);
+
+                // Replace the matched group with the replace char
                 int start = offset + matcher.start();
                 int end = offset + matcher.end();
                 String matchedWord = matcher.group();
