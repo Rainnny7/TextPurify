@@ -88,16 +88,22 @@ public final class FiltrationService {
         log.info("Downloaded lists in {}ms", System.currentTimeMillis() - before);
     }
 
+    /**
+     * Filter the content in the given input.
+     *
+     * @param input the input to filter
+     * @return the response from filtering the content
+     */
     @NonNull
     public ContentProcessResponse process(@NonNull ContentProcessInput input) {
+        String content = StringEscapeUtils.escapeJava(input.getContent()).toLowerCase().trim(); // The content to filter
+
         List<String> matched = new ArrayList<>(); // The content that was matched
         List<ContentTag> tags = new ArrayList<>(); // Tags obtained from the processed content
         StringBuilder replacement = new StringBuilder(input.getContent());
 
         // Handle filtering if a profanity list is present
         if (profanityList != null) {
-            String content = StringEscapeUtils.escapeJava(input.getContent()).toLowerCase().trim(); // The content to filter
-
             // Invoke each text processor on the content
             for (TextProcessor textProcessor : textProcessors) {
                 int before = matched.size();
@@ -109,8 +115,8 @@ public final class FiltrationService {
         }
 
         // Calculate the score based on
-        // the matched profane content
-        double score = 0D;
+        // the matched profane content, that cannot be bypassed by changing the content length
+        double score = Math.min(matched.stream().mapToDouble(String::length).sum() / content.length(), 1D);
 
         return new ContentProcessResponse(replacement.toString(), matched, tags, score);
     }

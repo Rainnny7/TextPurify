@@ -28,6 +28,7 @@ public final class VulgarityProcessor extends TextProcessor {
      * Substitutions for characters in profane words.
      */
     private static final Map<Character, List<Character>> charSubstitutions = Collections.synchronizedMap(new HashMap<>());
+
     static { // Populate char substitutions
         charSubstitutions.put('e', Collections.singletonList('3'));
         charSubstitutions.put('i', List.of('1', '!'));
@@ -75,8 +76,9 @@ public final class VulgarityProcessor extends TextProcessor {
                 matched.add(word);
                 int start = offset + matcher.start();
                 int end = offset + matcher.end();
-                replacement.replace(start, end, Character.toString(replaceChar).repeat(word.length()));
-                offset += word.length() - (end - start);
+                String matchedWord = matcher.group();
+                replacement.replace(start, end, Character.toString(replaceChar).repeat(matchedWord.length()));
+                offset += matchedWord.length() - (end - start);
             }
         }
 
@@ -122,7 +124,7 @@ public final class VulgarityProcessor extends TextProcessor {
                 for (Character substitution : charSubstitutions.get(lowerChar)) {
                     chars.append(substitution);
                 }
-                obfuscatedWordRegex.append('[').append(chars).append(']');
+                obfuscatedWordRegex.append('[').append(chars).append("]+");
             } else {
                 obfuscatedWordRegex.append(lowerChar);
             }
