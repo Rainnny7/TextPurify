@@ -1,5 +1,6 @@
 package me.braydon.profanity;
 
+import com.google.gson.Gson;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +18,8 @@ import java.util.Objects;
 @SpringBootApplication
 @Log4j2(topic = "TextPurify")
 public class TextPurifyAPI {
+    public static final Gson GSON = new Gson();
+
     @SneakyThrows
     public static void main(@NonNull String[] args) {
         // Handle loading of our configuration file

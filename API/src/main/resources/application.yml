@@ -10,6 +10,13 @@ logging:
 
 # Spring Configuration
 spring:
+  data:
+    # MongoDB Configuration
+    mongodb:
+      uri: "mongodb://textpurify:p4$$w0rd@localhost:27017"
+      database: "textpurify"
+      auto-index-creation: true # Automatically create collection indexes
+
   # Don't serialize null values by default with Jackson
   jackson:
     default-property-inclusion: non_null

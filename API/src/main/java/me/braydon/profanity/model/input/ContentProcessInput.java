@@ -16,6 +16,12 @@ public final class ContentProcessInput {
     private String content;
 
     /**
+     * The char to use for matched
+     * replacement operations.
+     */
+    private char replaceChar = '*';
+
+    /**
      * Check if this input is malformed.
      *
      * @return whether the input is malformed

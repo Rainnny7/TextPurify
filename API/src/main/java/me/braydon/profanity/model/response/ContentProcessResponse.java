@@ -3,6 +3,7 @@ package me.braydon.profanity.model.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import me.braydon.profanity.common.ContentTag;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public final class ContentProcessResponse {
     /**
      * The tags obtained from the content.
      */
-    @NonNull private final List<String> tags;
+    @NonNull private final List<ContentTag> tags;
 
     /**
      * The score of the content.

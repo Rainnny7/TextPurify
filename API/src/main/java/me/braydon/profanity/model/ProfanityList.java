@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import me.braydon.profanity.common.Language;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import java.util.Map;
  */
 @AllArgsConstructor @Getter
 public final class ProfanityList {
+    @Id @NonNull private final String id;
+
     /**
      * The links that are whitelisted from the filter.
      */
