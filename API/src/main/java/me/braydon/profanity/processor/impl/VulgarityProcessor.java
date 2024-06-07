@@ -27,17 +27,18 @@ public final class VulgarityProcessor extends TextProcessor {
     /**
      * Substitutions for characters in profane words.
      */
-    private static final Map<Character, Character> charSubstitutions = Collections.synchronizedMap(new HashMap<>());
+    private static final Map<Character, List<Character>> charSubstitutions = Collections.synchronizedMap(new HashMap<>());
     static { // Populate char substitutions
-        charSubstitutions.put('3', 'e');
-        charSubstitutions.put('1', 'i');
-        charSubstitutions.put('!', 'i');
-        charSubstitutions.put('@', 'a');
-        charSubstitutions.put('7', 't');
-        charSubstitutions.put('0', 'o');
-        charSubstitutions.put('5', 's');
-        charSubstitutions.put('8', 'b');
-        charSubstitutions.put('$', 's');
+        charSubstitutions.put('e', Collections.singletonList('3'));
+        charSubstitutions.put('i', List.of('1', '!'));
+        charSubstitutions.put('a', List.of('4', '@'));
+        charSubstitutions.put('t', List.of('7'));
+        charSubstitutions.put('o', List.of('0'));
+        charSubstitutions.put('s', List.of('5', '$'));
+        charSubstitutions.put('b', List.of('8'));
+        charSubstitutions.put('g', Collections.singletonList('q'));
+        charSubstitutions.put('u', Collections.singletonList('v'));
+        charSubstitutions.put('1', Collections.singletonList('!'));
     }
 
     public VulgarityProcessor() {
@@ -117,7 +118,11 @@ public final class VulgarityProcessor extends TextProcessor {
             char lowerChar = Character.toLowerCase(character);
             exactWordRegex.append(lowerChar);
             if (charSubstitutions.containsKey(lowerChar)) {
-                obfuscatedWordRegex.append('[').append(lowerChar).append(charSubstitutions.get(lowerChar)).append(']');
+                StringBuilder chars = new StringBuilder(Character.toString(lowerChar));
+                for (Character substitution : charSubstitutions.get(lowerChar)) {
+                    chars.append(substitution);
+                }
+                obfuscatedWordRegex.append('[').append(chars).append(']');
             } else {
                 obfuscatedWordRegex.append(lowerChar);
             }
