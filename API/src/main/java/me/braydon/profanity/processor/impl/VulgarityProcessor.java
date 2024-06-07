@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  * @author Braydon
  */
 public final class VulgarityProcessor extends TextProcessor {
+    private static final String PUNCTUATION_PATTERN = "[\\p{Punct}]*";
+
     /**
      * Patterns for profane words.
      */
@@ -63,8 +65,6 @@ public final class VulgarityProcessor extends TextProcessor {
         if (wordPatterns.isEmpty()) {
             populatePatterns(profanityList);
         }
-        content = content.replaceAll("\\p{Punct}", ""); // Replace punctuation
-
         // Process single words in the content
         int offset = 0;
         for (Map.Entry<String, Pattern> entry : wordPatterns.entrySet()) {
@@ -78,7 +78,7 @@ public final class VulgarityProcessor extends TextProcessor {
                 int end = offset + matcher.end();
                 String matchedWord = matcher.group();
                 replacement.replace(start, end, Character.toString(replaceChar).repeat(matchedWord.length()));
-                offset += matchedWord.length() - (end - start);
+                offset+= matchedWord.length() - (end - start);
             }
         }
 
@@ -124,9 +124,9 @@ public final class VulgarityProcessor extends TextProcessor {
                 for (Character substitution : charSubstitutions.get(lowerChar)) {
                     chars.append(substitution);
                 }
-                obfuscatedWordRegex.append('[').append(chars).append("]+");
+                obfuscatedWordRegex.append(PUNCTUATION_PATTERN + "[").append(chars).append("]+" + PUNCTUATION_PATTERN);
             } else {
-                obfuscatedWordRegex.append(lowerChar);
+                obfuscatedWordRegex.append(PUNCTUATION_PATTERN).append(lowerChar).append(PUNCTUATION_PATTERN);
             }
         }
 
