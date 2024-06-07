@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * @author Braydon
  */
 public final class AdTextProcessor extends TextProcessor {
-    private static final Pattern URL_REGEX = Pattern.compile("(?i)\\b((?:https?://)?(?:www\\.)?[a-z0-9.-]+(?:\\.[a-z]{2,})+(?:/\\S*)?)\\b");
+    private static final Pattern URL_REGEX = Pattern.compile("(?i)\\b((?:https?://)?(?:www\\.)?[a-z0-9.-]+\\.[a-z]{2,10}(?:/\\S*)?)\\b");
     private static final Pattern IPV4_REGEX = Pattern.compile("(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))");
 
     public AdTextProcessor() {
