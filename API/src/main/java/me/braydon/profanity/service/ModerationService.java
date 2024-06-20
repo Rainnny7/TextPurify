@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 @Service
 public final class ModerationService {
     public void handleAlerts(@NonNull ContentProcessResponse response) {
+        // Likely safe content, no need to alert anyone
+        if (response.getScore() < 0.6D) {
+            return;
+        }
         // TODO: handle alerting of the content to the appropriate parties
     }
 }
