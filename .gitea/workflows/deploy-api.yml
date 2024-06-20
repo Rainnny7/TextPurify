@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches: ["master"]
-    paths: [".gitea/workflows/deploy-api.yml", "API/**", "!API/README.md"]
+    paths: [".gitea/workflows/deploy-api.yml", "API/**", "!docker-compose.yml", "!README.md"]
 
 jobs:
   docker:
