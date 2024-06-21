@@ -3,7 +3,6 @@ package me.braydon.profanity.notification.impl;
 import jakarta.annotation.PostConstruct;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import me.braydon.profanity.common.ContentTag;
 import me.braydon.profanity.common.DiscordWebhook;
 import me.braydon.profanity.model.response.ContentProcessResponse;
 import me.braydon.profanity.notification.INotificationSource;
@@ -68,10 +67,10 @@ public final class DiscordSource implements INotificationSource {
             embed.addField("Content", "`" + response.getContent() + "`", false);
         }
         if (content.isDisplayMatched()) {
-            embed.addField("Matched", String.join("`, `", response.getMatched()), false);
+            embed.addField("Matched", response.getMatched().stream().map(matched -> "`" + matched + "`").collect(Collectors.joining(", ")), false);
         }
         if (content.isDisplayTags()) {
-            embed.addField("Tags", response.getTags().stream().map(ContentTag::name).collect(Collectors.joining("`, `")), false);
+            embed.addField("Tags", response.getTags().stream().map(tag -> "`" + tag.name() + "`").collect(Collectors.joining(", ")), false);
         }
         if (content.isDisplayTags()) {
             embed.addField("Score", "`" + response.getScore() + "`", false);
