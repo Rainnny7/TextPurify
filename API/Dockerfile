@@ -1,7 +1,7 @@
 # Stage 1: Build
 FROM maven:3.8.5-openjdk-17-slim AS build
 
-WORKDIR /home/container
+WORKDIR /usr/local/app
 
 # Copy only the files needed for the build
 COPY pom.xml ./
@@ -13,10 +13,10 @@ RUN mvn clean package -q -DskipTests -T4C
 # Stage 2: Runtime
 FROM openjdk:17-jdk-slim
 
-WORKDIR /home/container
+WORKDIR /usr/local/app
 
 # Copy the jar from the build stage
-COPY --from=build /home/container/target/TextPurify-API.jar ./TextPurify-API.jar
+COPY --from=build /usr/local/app/target/TextPurify-API.jar ./TextPurify-API.jar
 
 # Expose port
 EXPOSE 80
