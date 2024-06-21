@@ -6,7 +6,8 @@ The backend API for TextPurify, responsible for the filtering and moderation of 
 ### POST `/content/process`
 This endpoint is used to filter text content. The request body should be an encoded form with the following fields:
 
-| Field         | Description                                            | Required |
-|---------------|--------------------------------------------------------|----------|
-| `content`     | The text content to be filtered.                       | Yes      |
-| `replaceChar` | The character to use for filtered content replacement. | No       |
+| Field         | Description                                                               | Required |
+|---------------|---------------------------------------------------------------------------|----------|
+| `content`     | The text content to be filtered.                                          | Yes      |
+| `replaceChar` | The character to use for filtered content replacement.                    | No       |
+| `ignoredTags` | The tags to ignore during filtering (E.g: `VULGARITY`, or `ADVERTISING`). | No       |
