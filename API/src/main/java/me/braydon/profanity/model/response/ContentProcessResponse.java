@@ -18,6 +18,11 @@ public final class ContentProcessResponse {
     private final boolean containsProfanity;
 
     /**
+     * The original content.
+     */
+    @NonNull private final String content;
+
+    /**
      * The replacement for the content.
      */
     @NonNull private final String replacement;

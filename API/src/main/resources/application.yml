@@ -8,6 +8,20 @@ logging:
   file:
     path: "./logs"
 
+# Notification Configuration
+notifications:
+  enabled: false
+  content: # Elements to display in the notification
+    content: true # Should filtered content be displayed?
+    matched: true # Should matched content be displayed?
+    tags: true # Should obtained tags be displayed?
+    score: true # Should the score be displayed?
+  sources:
+    Discord:
+      url: ""
+      username: "TextPurify"
+      avatar: "https://cdn.rainnny.club/usRQ10FSwaAI.png"
+
 # Spring Configuration
 spring:
   data:

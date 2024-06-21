@@ -108,10 +108,16 @@ public final class FiltrationService {
         if (profanityList != null) {
             // Invoke each text processor on the content
             for (TextProcessor textProcessor : textProcessors) {
+                ContentTag tag = textProcessor.getTag();
+
+                // Skip this processor as it's tag is ignored.
+                if (input.isTagIgnored(tag)) {
+                    continue;
+                }
                 int before = matched.size();
                 replacement = textProcessor.process(profanityList, content, replacement, input.getReplaceChar(), matched);
                 if (matched.size() > before) {
-                    tags.add(textProcessor.getTag());
+                    tags.add(tag);
                 }
             }
         }
@@ -124,6 +130,6 @@ public final class FiltrationService {
         }
         score = Math.min(score, 1D);
 
-        return new ContentProcessResponse(!matched.isEmpty(), replacement.toString(), matched, tags, score);
+        return new ContentProcessResponse(!matched.isEmpty(), input.getContent(), replacement.toString(), matched, tags, score);
     }
 }
