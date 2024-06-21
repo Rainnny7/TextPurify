@@ -1,5 +1,6 @@
 package me.braydon.profanity.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.braydon.profanity.model.response.ContentProcessResponse;
@@ -38,7 +39,7 @@ public class ModerationService {
     /**
      * The content to display within notifications.
      */
-    @NonNull private final NotificationContent notificationContent;
+    private NotificationContent notificationContent;
 
     /**
      * The registered notification sources to alert.
@@ -47,8 +48,12 @@ public class ModerationService {
 
     @Autowired
     public ModerationService(@NonNull List<INotificationSource> notificationSources) {
-        notificationContent = new NotificationContent(displayContent, displayMatched, displayTags, displayScore);
         this.notificationSources = notificationSources;
+    }
+
+    @PostConstruct
+    public void onInitialize() {
+        notificationContent = new NotificationContent(displayContent, displayMatched, displayTags, displayScore);
     }
 
     /**
