@@ -20,6 +20,6 @@ services:
       MONGO_INITDB_ROOT_USERNAME: textpurify
       MONGO_INITDB_ROOT_PASSWORD: p4$$w0rd
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
       - ./data/mongodb:/data/db
