@@ -20,7 +20,7 @@ notifications:
     Discord:
       url: ""
       username: "TextPurify"
-      avatar: "https://cdn.rainnny.club/usRQ10FSwaAI.png"
+      avatar: "https://i.imgur.com/pOK6T96.png"
 
 # Spring Configuration
 spring:
