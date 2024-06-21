@@ -13,7 +13,7 @@
     <!-- Project Details -->
     <groupId>me.braydon</groupId>
     <artifactId>TextPurify-API</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <!-- Properties -->
     <properties>
