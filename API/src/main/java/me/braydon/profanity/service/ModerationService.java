@@ -7,6 +7,7 @@ import me.braydon.profanity.notification.INotificationSource;
 import me.braydon.profanity.notification.NotificationContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,20 +19,10 @@ import java.util.List;
  * @author Braydon
  */
 @Service @Log4j2(topic = "Moderation")
-public final class ModerationService {
+public class ModerationService {
     @Value("${notifications.enabled}")
     private boolean enabled;
 
-    /**
-     * # Notification Configuration
-     * notifications:
-     *   enabled: false
-     *   content: # Elements to display in the notification
-     *     content: true # Should filtered content be displayed?
-     *     matched: true # Should matched content be displayed?
-     *     tags: true # Should obtained tags be displayed?
-     *     score: true # Should the score be displayed?
-     */
     @Value("${notifications.content.content}")
     private boolean displayContent;
 
@@ -70,6 +61,7 @@ public final class ModerationService {
      *
      * @param response the response to handle
      */
+    @Async
     public void handleAlerts(@NonNull ContentProcessResponse response) {
         // Disabled or likely safe content, no need to alert anyone
         if (!enabled || response.getScore() < 0.6D) {
