@@ -6,6 +6,7 @@ import me.braydon.profanity.model.ProfanityList;
 import me.braydon.profanity.processor.TextProcessor;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -25,25 +26,33 @@ public final class AdTextProcessor extends TextProcessor {
     }
 
     /**
-     * Processor the given content.
+     * Process the given content.
      *
      * @param profanityList the profanity list to use
      * @param content       the content to process
      * @param replacement   the replacement content to modify
      * @param replaceChar   the replace char to use
      * @param matched       the matched content to add to
+     * @param matchedTags   the tags obtained from matches
+     * @param ignoredTags   optional tags to skip filtering for
      * @return the replaced content
      */
     @Override @NonNull
     public StringBuilder process(@NonNull ProfanityList profanityList, @NonNull String content,
-                                 @NonNull StringBuilder replacement, int replaceChar, @NonNull List<String> matched) {
+                                 @NonNull StringBuilder replacement, int replaceChar,
+                                 @NonNull List<String> matched, @NonNull Set<ContentTag> matchedTags,
+                                 List<ContentTag> ignoredTags) {
+        if (ignoredTags != null && ignoredTags.contains(ContentTag.ADVERTISEMENT)) {
+            return replacement;
+        }
+
         AtomicInteger offset = new AtomicInteger();
         Consumer<Matcher> handleReplacements = matcher -> {
             while (matcher.find()) {
                 String matchedGroup = matcher.group();
                 matched.add(matchedGroup);
+                matchedTags.add(ContentTag.ADVERTISEMENT);
 
-                // Replace the matched group with the replace char
                 int start = offset.get() + matcher.start();
                 int end = offset.get() + matcher.end();
                 String matchedWord = matcher.group();
@@ -51,8 +60,8 @@ public final class AdTextProcessor extends TextProcessor {
                 offset.set(offset.get() + (matchedWord.length() - (end - start)));
             }
         };
-        handleReplacements.accept(URL_REGEX.matcher(content)); // Handle URLs
-        handleReplacements.accept(IPV4_REGEX.matcher(content)); // Handle IPs
+        handleReplacements.accept(URL_REGEX.matcher(content));
+        handleReplacements.accept(IPV4_REGEX.matcher(content));
         return replacement;
     }
 }

@@ -72,7 +72,7 @@ public final class DiscordSource implements INotificationSource {
         if (content.isDisplayTags()) {
             embed.addField("Tags", response.getTags().stream().map(tag -> "`" + tag.name() + "`").collect(Collectors.joining(", ")), false);
         }
-        if (content.isDisplayTags()) {
+        if (content.isDisplayScore()) {
             embed.addField("Score", "`" + response.getScore() + "`", false);
         }
         webhook.addEmbed(embed);

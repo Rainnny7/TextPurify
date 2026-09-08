@@ -10,4 +10,14 @@ This endpoint is used to filter text content. The request body should be an enco
 |---------------|---------------------------------------------------------------------------|----------|
 | `content`     | The text content to be filtered.                                          | Yes      |
 | `replaceChar` | The character to use for filtered content replacement.                    | No       |
-| `ignoredTags` | The tags to ignore during filtering (E.g: `VULGARITY`, or `ADVERTISING`). | No       |
+| `ignoredTags` | The tags to ignore during filtering (see below).                            | No       |
+
+#### Content tags
+| Tag            | Description                                      |
+|----------------|--------------------------------------------------|
+| `SEXUAL`       | Explicit sexual content                          |
+| `VULGAR`       | Compound vulgar terms                            |
+| `HATE_SPEECH`  | Slurs, hate groups, and discriminatory language  |
+| `SELF_HARM`    | Self-harm encouragement                        |
+| `SHOCK`        | Shock/gore meme references                       |
+| `ADVERTISEMENT`| URLs and IP addresses                            |

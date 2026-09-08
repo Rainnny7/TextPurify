@@ -7,6 +7,7 @@ import me.braydon.profanity.common.ContentTag;
 import me.braydon.profanity.model.ProfanityList;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Braydon
@@ -27,8 +28,12 @@ public abstract class TextProcessor {
      * @param replacement the replacement content to modify
      * @param replaceChar the replace char to use
      * @param matched the matched content to add to
+     * @param matchedTags the tags obtained from matches in this processor
+     * @param ignoredTags optional tags to skip filtering for
      * @return the replaced content
      */
     @NonNull public abstract StringBuilder process(@NonNull ProfanityList profanityList, @NonNull String content,
-                                            @NonNull StringBuilder replacement, int replaceChar, @NonNull List<String> matched);
+                                            @NonNull StringBuilder replacement, int replaceChar,
+                                            @NonNull List<String> matched, @NonNull Set<ContentTag> matchedTags,
+                                            List<ContentTag> ignoredTags);
 }

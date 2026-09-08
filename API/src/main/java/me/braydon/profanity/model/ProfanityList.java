@@ -3,6 +3,7 @@ package me.braydon.profanity.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import me.braydon.profanity.common.ContentTag;
 import me.braydon.profanity.common.Language;
 import org.springframework.data.annotation.Id;
 
@@ -25,12 +26,12 @@ public final class ProfanityList {
     @NonNull private final List<String> whitelistedLinks;
 
     /**
-     * Profane words for each language.
+     * Profane words per tag and language.
      */
-    @NonNull private final Map<Language, List<String>> profaneWords;
+    @NonNull private final Map<ContentTag, Map<Language, List<String>>> profaneWords;
 
     /**
-     * Profane phrases for each language.
+     * Profane phrases per tag and language.
      */
-    @NonNull private final Map<Language, List<String>> profanePhrases;
+    @NonNull private final Map<ContentTag, Map<Language, List<String>>> profanePhrases;
 }

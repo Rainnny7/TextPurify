@@ -6,5 +6,5 @@ package me.braydon.profanity.common;
  * @author Braydon
  */
 public enum ContentTag {
-    VULGARITY, ADVERTISEMENT
+    SEXUAL, VULGAR, HATE_SPEECH, SELF_HARM, SHOCK, ADVERTISEMENT
 }
