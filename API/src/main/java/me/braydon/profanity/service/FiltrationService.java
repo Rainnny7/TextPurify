@@ -118,19 +118,38 @@ public final class FiltrationService {
             }
         }
 
-        double score = calculateScore(matched, tags);
+        double score = calculateScore(raw, matched, tags);
 
         return new ContentProcessResponse(!matched.isEmpty(), input.getContent(), replacement.toString(), matched, new ArrayList<>(tags), score);
     }
 
-    private double calculateScore(@NonNull List<String> matched, @NonNull Set<ContentTag> tags) {
-        double score = 0D;
+    /**
+     * Calculate a 0-1 score representing how profane the content is.
+     * <p>
+     * Based on the proportion of matched characters to total content length,
+     * with a severity boost for hate speech and self-harm tags.
+     * </p>
+     */
+    static double calculateScore(@NonNull String content, @NonNull List<String> matched, @NonNull Set<ContentTag> tags) {
+        if (matched.isEmpty() || content.isEmpty()) {
+            return 0D;
+        }
+
+        int matchedLength = 0;
         for (String match : matched) {
-            score += 2D / (double) match.length();
+            matchedLength += match.length();
         }
+
+        double score = Math.min((double) matchedLength / content.length(), 1D);
+
         if (tags.contains(ContentTag.HATE_SPEECH) || tags.contains(ContentTag.SELF_HARM)) {
-            score *= 1.5D;
+            score = Math.min(score * 1.5D, 1D);
         }
-        return Math.min(score, 1D);
+
+        return roundScore(score);
+    }
+
+    private static double roundScore(double score) {
+        return Math.round(score * 1000D) / 1000D;
     }
 }
