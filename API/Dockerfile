@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM maven:3.8.5-openjdk-17-slim AS build
+FROM maven:3.9-eclipse-temurin-25 AS build
 
 WORKDIR /usr/local/app
 
@@ -11,7 +11,7 @@ COPY src ./src
 RUN mvn clean package -q -DskipTests -T4C
 
 # Stage 2: Runtime
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:25-jre
 
 WORKDIR /usr/local/app
 
