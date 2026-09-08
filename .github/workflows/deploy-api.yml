@@ -33,15 +33,9 @@ jobs:
           username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           password: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
 
-      - name: Build and Push (Docker Image)
+      - name: Publish Docker Image
         uses: docker/build-push-action@v7
         with:
           push: true
           context: API
           tags: rainnny/textpurify-api:latest
-
-      - name: Deploy to Dokku
-        uses: dokku/github-action@master
-        with:
-          git_remote_url: "ssh://dokku@10.10.3.28:22/textpurify-api"
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
