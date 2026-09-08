@@ -1,3 +1,7 @@
+# Admin Configuration
+admin:
+  api-key: "" # Leave empty to disable admin routes
+
 # Server Configuration
 server:
   address: 0.0.0.0

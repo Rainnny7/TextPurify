@@ -59,7 +59,7 @@ public final class FiltrationService {
      * Populate the database with
      * default lists if empty.
      */
-    @PostConstruct @SneakyThrows
+    @PostConstruct
     public void populateDefaults() {
         long before = System.currentTimeMillis();
 
@@ -67,8 +67,18 @@ public final class FiltrationService {
             log.info("Loaded lists in {}ms", System.currentTimeMillis() - before);
             return;
         }
+        profanityList = seedFromGitHub();
+        log.info("Downloaded lists in {}ms", System.currentTimeMillis() - before);
+    }
+
+    /**
+     * Download default lists from GitHub and save them.
+     *
+     * @return the seeded profanity list
+     */
+    @NonNull @SneakyThrows
+    public ProfanityList seedFromGitHub() {
         log.info("Downloading pre-made lists...");
-        before = System.currentTimeMillis();
 
         Map<ContentTag, Map<Language, List<String>>> profaneWords = new HashMap<>();
         Map<ContentTag, Map<Language, List<String>>> profanePhrases = new HashMap<>();
@@ -90,8 +100,48 @@ public final class FiltrationService {
                 }
             }
         }
-        profanityList = profanityListRepository.save(new ProfanityList("primary", new ArrayList<>(), profaneWords, profanePhrases));
-        log.info("Downloaded lists in {}ms", System.currentTimeMillis() - before);
+        return profanityListRepository.save(new ProfanityList("primary", new ArrayList<>(), profaneWords, profanePhrases));
+    }
+
+    /**
+     * Reload the in-memory profanity list and invalidate processor caches.
+     *
+     * @param list the list to load
+     */
+    public void reloadList(@NonNull ProfanityList list) {
+        profanityList = list;
+        invalidateCaches();
+    }
+
+    /**
+     * Reload the in-memory profanity list from MongoDB.
+     *
+     * @return the loaded list, or null if missing
+     */
+    public ProfanityList reloadFromDatabase() {
+        ProfanityList list = profanityListRepository.getProfanityList();
+        if (list != null) {
+            reloadList(list);
+        }
+        return list;
+    }
+
+    /**
+     * Get the current in-memory profanity list.
+     *
+     * @return the profanity list
+     */
+    public ProfanityList getProfanityList() {
+        return profanityList;
+    }
+
+    /**
+     * Invalidate cached data in all text processors.
+     */
+    public void invalidateCaches() {
+        for (TextProcessor textProcessor : textProcessors) {
+            textProcessor.invalidateCache();
+        }
     }
 
     /**

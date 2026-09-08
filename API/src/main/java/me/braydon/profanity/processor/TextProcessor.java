@@ -36,4 +36,9 @@ public abstract class TextProcessor {
                                             @NonNull StringBuilder replacement, int replaceChar,
                                             @NonNull List<String> matched, @NonNull Set<ContentTag> matchedTags,
                                             List<ContentTag> ignoredTags);
+
+    /**
+     * Invalidate any cached data held by this processor.
+     */
+    public void invalidateCache() { }
 }

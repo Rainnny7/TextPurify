@@ -97,6 +97,11 @@ public final class ProfanityTextProcessor extends TextProcessor {
         return replacement;
     }
 
+    @Override
+    public void invalidateCache() {
+        patternCache.clear();
+    }
+
     @NonNull
     private List<PatternEntry> getPatterns(@NonNull ProfanityList profanityList, List<ContentTag> ignoredTags) {
         String cacheKey = profanityList.getId() + ":" + (ignoredTags == null ? "" : ignoredTags.toString());
