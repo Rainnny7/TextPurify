@@ -4,6 +4,7 @@ import lombok.NonNull;
 import me.braydon.profanity.common.ContentTag;
 import me.braydon.profanity.model.ProfanityList;
 import me.braydon.profanity.processor.TextProcessor;
+import me.braydon.profanity.util.LinkWhitelistUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,9 @@ public final class AdTextProcessor extends TextProcessor {
         Consumer<Matcher> handleReplacements = matcher -> {
             while (matcher.find()) {
                 String matchedGroup = matcher.group();
+                if (LinkWhitelistUtils.isWhitelisted(matchedGroup, profanityList.getWhitelistedLinks())) {
+                    continue;
+                }
                 matched.add(matchedGroup);
                 matchedTags.add(ContentTag.ADVERTISEMENT);
 
