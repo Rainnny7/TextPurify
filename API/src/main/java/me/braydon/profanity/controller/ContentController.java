@@ -2,6 +2,7 @@ package me.braydon.profanity.controller;
 
 import lombok.NonNull;
 import me.braydon.profanity.exception.impl.BadRequestException;
+import me.braydon.profanity.model.FilterContext;
 import me.braydon.profanity.model.input.ContentProcessInput;
 import me.braydon.profanity.model.response.ContentProcessResponse;
 import me.braydon.profanity.service.FiltrationService;
@@ -40,6 +41,10 @@ public final class ContentController {
     public ResponseEntity<ContentProcessResponse> process(ContentProcessInput input) throws BadRequestException {
         if (input == null || (input.isMalformed())) { // Validate the input
             throw new BadRequestException("Missing or malformed input.");
+        }
+        FilterContext context = input.getFilterContext();
+        if (!context.isEmpty()) {
+            input.setContext(context.getValues());
         }
         ContentProcessResponse response = filtrationService.process(input); // Filter the content
         moderationService.handleAlerts(response); // Handle moderation

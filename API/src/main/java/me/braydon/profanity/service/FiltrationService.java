@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import me.braydon.profanity.TextPurifyAPI;
 import me.braydon.profanity.common.ContentTag;
 import me.braydon.profanity.common.Language;
+import me.braydon.profanity.model.FilterContext;
 import me.braydon.profanity.model.ProfanityList;
 import me.braydon.profanity.model.input.ContentProcessInput;
 import me.braydon.profanity.model.response.ContentProcessResponse;
@@ -169,8 +170,11 @@ public final class FiltrationService {
         }
 
         double score = calculateScore(raw, matched, tags);
+        FilterContext context = input.getFilterContext();
+        FilterContext responseContext = context.isEmpty() ? null : context;
 
-        return new ContentProcessResponse(!matched.isEmpty(), input.getContent(), replacement.toString(), matched, new ArrayList<>(tags), score);
+        return new ContentProcessResponse(!matched.isEmpty(), input.getContent(), replacement.toString(), matched,
+                new ArrayList<>(tags), score, responseContext);
     }
 
     /**

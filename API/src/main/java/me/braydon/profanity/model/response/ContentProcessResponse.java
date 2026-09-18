@@ -1,9 +1,12 @@
 package me.braydon.profanity.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import me.braydon.profanity.common.ContentTag;
+import me.braydon.profanity.model.FilterContext;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -45,4 +48,11 @@ public final class ContentProcessResponse {
      * </p>
      */
     private final double score;
+
+    /**
+     * Caller metadata echoed from the request.
+     * Omitted from JSON when not provided.
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Nullable private final FilterContext context;
 }

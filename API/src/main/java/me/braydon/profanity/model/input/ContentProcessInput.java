@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import me.braydon.profanity.common.ContentTag;
+import me.braydon.profanity.model.FilterContext;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The input to use for processing content.
@@ -34,6 +36,19 @@ public final class ContentProcessInput {
      * </p>
      */
     private List<ContentTag> ignoredTags;
+
+    /**
+     * Optional caller metadata (e.g. player, server).
+     */
+    private Map<String, String> context;
+
+    /**
+     * Return the sanitized context for this input.
+     */
+    @NonNull
+    public FilterContext getFilterContext() {
+        return FilterContext.sanitize(this.context);
+    }
 
     /**
      * Check if the given tag is ignored.

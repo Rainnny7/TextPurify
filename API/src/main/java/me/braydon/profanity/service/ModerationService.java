@@ -36,6 +36,9 @@ public class ModerationService {
     @Value("${notifications.content.score}")
     private boolean displayScore;
 
+    @Value("${notifications.content.context}")
+    private boolean displayContext;
+
     /**
      * The content to display within notifications.
      */
@@ -53,7 +56,7 @@ public class ModerationService {
 
     @PostConstruct
     public void onInitialize() {
-        notificationContent = new NotificationContent(displayContent, displayMatched, displayTags, displayScore);
+        notificationContent = new NotificationContent(displayContent, displayMatched, displayTags, displayScore, displayContext);
     }
 
     /**

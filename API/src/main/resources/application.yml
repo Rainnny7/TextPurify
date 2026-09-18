@@ -20,6 +20,7 @@ notifications:
     matched: true # Should matched content be displayed?
     tags: true # Should obtained tags be displayed?
     score: true # Should the score be displayed?
+    context: true # Should request context be displayed?
   sources:
     Discord:
       url: ""

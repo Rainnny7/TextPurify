@@ -30,4 +30,9 @@ public final class NotificationContent {
      * Whether the score should be displayed.
      */
     private final boolean displayScore;
+
+    /**
+     * Whether request context should be displayed.
+     */
+    private final boolean displayContext;
 }

@@ -12,6 +12,7 @@ This endpoint is used to filter text content. The request body should be an enco
 | `content`     | The text content to be filtered.                                           | Yes      |
 | `replaceChar` | The character to use for filtered content replacement.                     | No       |
 | `ignoredTags` | The tags to ignore during filtering (see below).                           | No       |
+| `context[...]` | Optional caller metadata as key/value pairs (e.g. `context[player]=Steve`). Omitted entirely when not sent. | No      |
 
 #### Content tags
 | Tag             | Description                                       |
@@ -28,7 +29,10 @@ This endpoint is used to filter text content. The request body should be an enco
 ```bash
 curl -X POST "https://purify.rainnny.club/content/process" \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "content=Check out http://spam.com for deals"
+  -d "content=Check out http://spam.com for deals" \
+  -d "context[player]=Steve" \
+  -d "context[server]=Survival" \
+  -d "context[cause]=Global Chat"
 ```
 
 Response:
@@ -40,7 +44,12 @@ Response:
   "replacement": "Check out *************** for deals",
   "matched": ["http://spam.com"],
   "tags": ["ADVERTISEMENT"],
-  "score": 0.429
+  "score": 0.429,
+  "context": {
+    "player": "Steve",
+    "server": "Survival",
+    "cause": "Global Chat"
+  }
 }
 ```
 
@@ -52,6 +61,9 @@ Response:
 | `matched`           | The substrings that were filtered.                                           |
 | `tags`              | The content tags that matched.                                               |
 | `score`             | A value from 0–1 representing how likely the content is profane.             |
+| `context`           | Caller metadata echoed from the request. Omitted when not provided.          |
+
+Context is fully optional. Clients that do not send `context[...]` fields behave exactly as before — filtering is unchanged and the response omits the `context` key.
 
 ## Admin API
 

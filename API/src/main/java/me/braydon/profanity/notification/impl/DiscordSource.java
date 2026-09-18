@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import me.braydon.profanity.common.DiscordWebhook;
+import me.braydon.profanity.model.FilterContext;
 import me.braydon.profanity.model.response.ContentProcessResponse;
 import me.braydon.profanity.notification.INotificationSource;
 import me.braydon.profanity.notification.NotificationContent;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -75,7 +78,35 @@ public final class DiscordSource implements INotificationSource {
         if (content.isDisplayScore()) {
             embed.addField("Score", "`" + response.getScore() + "`", false);
         }
+        FilterContext context = response.getContext();
+        if (content.isDisplayContext() && context != null && !context.isEmpty()) {
+            for (Map.Entry<String, String> entry : context.getValues().entrySet()) {
+                embed.addField(formatContextFieldName(entry.getKey()), "`" + entry.getValue() + "`", false);
+            }
+        }
         webhook.addEmbed(embed);
         webhook.execute();
+    }
+
+    /**
+     * Format a context key for display in an embed field title.
+     */
+    @NonNull
+    private static String formatContextFieldName(@NonNull String key) {
+        String[] parts = key.replace('-', ' ').replace('_', ' ').split("\\s+");
+        StringBuilder builder = new StringBuilder();
+        for (String part : parts) {
+            if (part.isEmpty()) {
+                continue;
+            }
+            if (!builder.isEmpty()) {
+                builder.append(' ');
+            }
+            builder.append(part.substring(0, 1).toUpperCase(Locale.ROOT));
+            if (part.length() > 1) {
+                builder.append(part.substring(1).toLowerCase(Locale.ROOT));
+            }
+        }
+        return builder.isEmpty() ? key : builder.toString();
     }
 }
