@@ -7,6 +7,7 @@ import me.braydon.profanity.processor.TextProcessor;
 import me.braydon.profanity.util.LinkWhitelistUtils;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -19,8 +20,24 @@ import java.util.regex.Pattern;
  * @author Braydon
  */
 public final class AdTextProcessor extends TextProcessor {
-    private static final Pattern URL_REGEX = Pattern.compile("(?i)\\b((?:https?://)?(?:www\\.)?[a-z0-9.-]+\\.[a-z]{2,10}(?:/\\S*)?)\\b");
+    /**
+     * Hostnames with consecutive dots (ellipses like {@code worked...ty}) must not match.
+     * Labels are alphanumeric, with optional hyphens in the middle.
+     */
+    private static final Pattern URL_REGEX = Pattern.compile(
+            "(?i)\\b((?:https?://)?(?:www\\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,10}(?:/\\S*)?)\\b"
+    );
     private static final Pattern IPV4_REGEX = Pattern.compile("(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))");
+
+    /**
+     * Country-code TLDs that are also common English words. Bare {@code did.it} / {@code go.to}
+     * fragments in chat are almost never ads; require a protocol, {@code www}, path, or subdomain.
+     */
+    private static final Set<String> AMBIGUOUS_TLDS = Set.of(
+            "ad", "am", "an", "as", "at", "be", "by", "do", "he", "id", "if",
+            "in", "is", "it", "me", "my", "no", "on", "or", "re", "so", "to",
+            "us", "we"
+    );
 
     public AdTextProcessor() {
         super(ContentTag.ADVERTISEMENT);
@@ -51,6 +68,9 @@ public final class AdTextProcessor extends TextProcessor {
         Consumer<Matcher> handleReplacements = matcher -> {
             while (matcher.find()) {
                 String matchedGroup = matcher.group();
+                if (!isLikelyAdvertisementUrl(matchedGroup)) {
+                    continue;
+                }
                 if (LinkWhitelistUtils.isWhitelisted(matchedGroup, profanityList.getWhitelistedLinks())) {
                     continue;
                 }
@@ -67,5 +87,36 @@ public final class AdTextProcessor extends TextProcessor {
         handleReplacements.accept(URL_REGEX.matcher(content));
         handleReplacements.accept(IPV4_REGEX.matcher(content));
         return replacement;
+    }
+
+    /**
+     * Whether a regex URL match is likely an advertisement rather than casual punctuation.
+     */
+    private static boolean isLikelyAdvertisementUrl(@NonNull String matched) {
+        String lower = matched.toLowerCase(Locale.ROOT);
+        if (lower.startsWith("http://") || lower.startsWith("https://") || lower.startsWith("www.")) {
+            return true;
+        }
+        if (matched.indexOf('/') >= 0) {
+            return true;
+        }
+        String host = LinkWhitelistUtils.normalizeHost(matched);
+        if (host.isEmpty() || host.contains("..")) {
+            return false;
+        }
+        int lastDot = host.lastIndexOf('.');
+        if (lastDot <= 0 || lastDot == host.length() - 1) {
+            return false;
+        }
+        int dots = 0;
+        for (int i = 0; i < host.length(); i++) {
+            if (host.charAt(i) == '.') {
+                dots++;
+            }
+        }
+        if (dots >= 2) {
+            return true;
+        }
+        return !AMBIGUOUS_TLDS.contains(host.substring(lastDot + 1));
     }
 }

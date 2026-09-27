@@ -111,4 +111,50 @@ class AdTextProcessorTest {
         assertTrue(matched.isEmpty());
         assertEquals(content, replacement.toString());
     }
+
+    @Test
+    void doesNotFlagEllipsisAsAdvertisement() {
+        assertNotAdvertisement("yay.....whatever you did.it worked...ty");
+        assertNotAdvertisement("worked...ty");
+        assertNotAdvertisement("you did.it");
+        assertNotAdvertisement("go.to spawn when you can");
+    }
+
+    @Test
+    void stillFlagsGamingAndCommercialDomains() {
+        List<String> matched = new ArrayList<>();
+        Set<ContentTag> tags = EnumSet.noneOf(ContentTag.class);
+        String content = "join hypixel.net or discord.gg/abc";
+        StringBuilder replacement = new StringBuilder(content);
+
+        processor.process(profanityList, content, replacement, '*', matched, tags, null);
+
+        assertEquals(List.of("hypixel.net", "discord.gg/abc"), matched);
+        assertTrue(tags.contains(ContentTag.ADVERTISEMENT));
+    }
+
+    @Test
+    void stillFlagsAmbiguousTldWhenClearlyAUrl() {
+        List<String> matched = new ArrayList<>();
+        Set<ContentTag> tags = EnumSet.noneOf(ContentTag.class);
+        String content = "visit https://example.it or play.server.it or www.site.it";
+        StringBuilder replacement = new StringBuilder(content);
+
+        processor.process(profanityList, content, replacement, '*', matched, tags, null);
+
+        assertEquals(List.of("https://example.it", "play.server.it", "www.site.it"), matched);
+        assertTrue(tags.contains(ContentTag.ADVERTISEMENT));
+    }
+
+    private void assertNotAdvertisement(String content) {
+        List<String> matched = new ArrayList<>();
+        Set<ContentTag> tags = EnumSet.noneOf(ContentTag.class);
+        StringBuilder replacement = new StringBuilder(content);
+
+        processor.process(profanityList, content, replacement, '*', matched, tags, null);
+
+        assertTrue(matched.isEmpty(), () -> "unexpected matches: " + matched);
+        assertFalse(tags.contains(ContentTag.ADVERTISEMENT));
+        assertEquals(content, replacement.toString());
+    }
 }
